@@ -68,10 +68,39 @@ public class Wheel : MonoBehaviour
    [SerializeField] public Engine engine;
 
     public TextMeshProUGUI mTorque;
-    public float coeff;
+    
     public float relaxationLength;
 
     public float InputX;
+
+
+
+
+
+
+
+
+
+   public Vector3 FxForce;
+    public Vector3 FyForce;
+    public Vector3 Force;
+    public float coeff;
+    public float CoeffX;
+    public float CoeffY;
+    public float throttleCoeff=1;
+    public float tireCoeff;
+    public float throttle;
+    float fZ;
+    Vector3 fZForce;
+    float slipAngle;
+    [SerializeField] float slipAnglePeak=8;
+    float sX;
+    float sY;
+    [SerializeField] float tC;
+    float targetAngularVelocity;
+
+
+
 
     void Start()
     {
@@ -129,19 +158,25 @@ public class Wheel : MonoBehaviour
     void FixedUpdate()
     {
 
-
         //motorTorque = torqueGraph.Evaluate(engine.currentRpm);
 
 
-        if(Physics.Raycast(transform.position,-transform.up,out RaycastHit hit, maxLength + wheelRadius, whatIsGround))
+        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, maxLength + wheelRadius, whatIsGround))
         {
 
             SuspensionForceCount(hit);
             WheelVelocityCount(hit);
-            XYForcesCount();
+            
             RearDrive(hit);
         }
+        else springLength = restLegth;
+        
     }
+
+
+
+
+
 
 
 
@@ -155,7 +190,33 @@ public void SuspensionForceCount(RaycastHit hit)
         damperForce = damperStiffness * springVelocity;
 
         suspensionForce = (springForce + damperForce) * transform.up;
+
+        fZ = springForce + damperForce;
+        fZForce = fZ * hit.normal.normalized;
+
     }
+
+    public void ApplySuspensionForce()
+    {
+        rb.AddForceAtPosition(fZForce, transform.position);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public void Inputs()
     {
         InputX = Input.GetAxis("Vertical");
@@ -164,46 +225,87 @@ public void SuspensionForceCount(RaycastHit hit)
     {
         brakeForce = InputX * brakeCoeff;
     }
-    public void XYForcesCount()
-    {
-        Fx = InputX * motorTorque;
-        Fy = wheelVelocityLS.x * springForce;
-    }
+   
     public void WheelVelocityCount(RaycastHit hit)
     {
         wheelVelocityLS = transform.InverseTransformDirection(rb.GetPointVelocity(hit.point));
-       /* coeff = (Mathf.Abs(wheelVelocityLS.y) / relaxationLength) * Time.fixedDeltaTime;
-        wheelVelocityLS.y = Mathf.Max(wheelVelocityLS.y) - wheelVelocityLS.y * coeff;
-        wheelVelocityLS.y = Mathf.Clamp(wheelVelocityLS.y, -1, 1);*/
+       // coeff = (Mathf.Abs(wheelVelocityLS.x) / relaxationLength) * Time.fixedDeltaTime;
+       // coeff = Mathf.Clamp(coeff, 0, 1);
+       // wheelVelocityLS.x = (Mathf.Max(wheelVelocityLS.x) - wheelVelocityLS.x) * coeff;
+        //wheelVelocityLS.x = Mathf.Clamp(wheelVelocityLS.x, -1, 1);
     }
+    /* public void SlipAngleCount()
+     {
+         if(wheelVelocityLS.z!=0)
+         slipAngle = Mathf.Atan(-wheelVelocityLS.x / Mathf.Abs(wheelVelocityLS.z))*Mathf.Rad2Deg;
+         wheelVelocityLS.x = Mathf.Clamp(slipAngle / slipAnglePeak, -1, 1);
 
+     }*/
+  
+
+    private void GetSy()
+    {
+        slipAngle = wheelVelocityLS.z == 0 ? 0 : Mathf.Atan(-wheelVelocityLS.x / Mathf.Abs(wheelVelocityLS.z)) * Mathf.Rad2Deg;
+        sY = slipAngle / slipAnglePeak;
+    }
     public void RearDrive(RaycastHit hit)
     {
+       
+        
+
+        wheelVelocityLS.y = Mathf.Clamp(wheelVelocityLS.y, -1, 1);
+
+
+        FxForce = Vector3.ProjectOnPlane(transform.forward, hit.normal).normalized;
+
+        FyForce = Vector3.ProjectOnPlane(transform.right, hit.normal).normalized;
+
+
+       
+
+
+
+
+
+
         if (wheelFrontLeft)
         {
+            Debug.DrawRay(transform.position - transform.up * springLength, FxForce, Color.blue);
+            Debug.DrawRay(transform.position - transform.up * springLength, FyForce, Color.red);
             // Debug.Log("front"+wheelVelocityLS.y);
+            throttle = 0;
             rotationAngle += Mathf.Rad2Deg * wheelVelocityLS.z / wheelRadius * Time.fixedDeltaTime;
-            rb.AddForceAtPosition(suspensionForce + (Fx * transform.forward) + (Fy * -transform.right), hit.point);
+            rb.AddForceAtPosition( Force,transform.position-transform.up*springLength);
         }
         if (wheelFrontRight)
         {
-            Debug.Log("Front " + wheelVelocityLS.x);
+            Debug.DrawRay(transform.position - transform.up * springLength, FxForce, Color.blue);
+            Debug.DrawRay(transform.position - transform.up * springLength, FyForce, Color.red);
+            throttle = 0;
+           
             rotationAngle -= Mathf.Rad2Deg * wheelVelocityLS.z / wheelRadius * Time.fixedDeltaTime;
-            rb.AddForceAtPosition(suspensionForce + (Fx * transform.forward) + (Fy * -transform.right), hit.point);
+            rb.AddForceAtPosition(Force, transform.position - transform.up * springLength);
         }
         if (wheelRearLeft)
         {
-            Debug.Log("Rear "+wheelVelocityLS.x);
+            throttle = InputX;
+            Debug.DrawRay(transform.position - transform.up * springLength, FxForce, Color.blue);
+            Debug.DrawRay(transform.position - transform.up * springLength, FyForce, Color.red);
+           
             // Debug.Log("rear"+wheelVelocityLS.y);
             rotationAngle += Mathf.Rad2Deg * wheelVelocityLS.z/ wheelRadius * Time.fixedDeltaTime;
-            Debug.DrawRay(transform.position, suspensionForce + Fx * transform.forward, Color.blue);
-            rb.AddForceAtPosition(suspensionForce + (Fx * transform.forward) + (Fy * -transform.right), hit.point);
+            //Debug.DrawRay(transform.position, suspensionForce + Fx * transform.forward, Color.blue);
+            rb.AddForceAtPosition( Force, transform.position - transform.up * springLength);
         }
         if (wheelRearRight)
         {
+            throttle = InputX ;
+            Debug.DrawRay(transform.position - transform.up * springLength, FxForce, Color.blue);
+            Debug.DrawRay(transform.position - transform.up * springLength, FyForce, Color.red);
+
             rotationAngle += Mathf.Rad2Deg * wheelVelocityLS.z / wheelRadius * Time.fixedDeltaTime;
-            Debug.DrawRay(transform.position, suspensionForce + Fx * transform.forward, Color.blue);
-            rb.AddForceAtPosition(suspensionForce + (Fx * transform.forward) + (Fy * -transform.right), hit.point);
+            //Debug.DrawRay(transform.position, suspensionForce + Fx * transform.forward, Color.blue);
+            rb.AddForceAtPosition( Force, transform.position - transform.up * springLength);
         }
         Debug.DrawRay(transform.position, Fx * transform.forward + Fy * -transform.right, Color.black);
         //frontTrackForceReducer = Mathf.Clamp(frontTrackForceReducer, minfrontTrackForceReducer, maxfrontTrackForceReducer);
