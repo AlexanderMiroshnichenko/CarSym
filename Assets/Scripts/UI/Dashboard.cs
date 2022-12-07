@@ -16,6 +16,8 @@ public class Dashboard : MonoBehaviour
     private float tachoAngleSize;
     private float engineMaxRpm;
     private Rigidbody rb;
+    [SerializeField] private Text angle;
+    [SerializeField] private WheelControllerTFM wheel;
     public void InitDashboard(Rigidbody _rb, float maxRpm)
     {
         engineMaxRpm = maxRpm;
@@ -32,7 +34,7 @@ public class Dashboard : MonoBehaviour
             tachoAngle = zeroTachoAngle - rpmNormalized * tachoAngleSize;
             needle.eulerAngles = new Vector3(0, 0, tachoAngle);
             speed.text = Mathf.Round(rb.velocity.magnitude * 3.6f).ToString();
-
+            angle.text = "Angle: "+Mathf.RoundToInt(Mathf.Abs(wheel.slipAngle)).ToString();
             if(gearComponent.GetCurrentGear()==1)
             gear.text = "N";
             else gear.text = (gearComponent.GetCurrentGear() - 1).ToString();

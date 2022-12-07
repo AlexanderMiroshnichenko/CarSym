@@ -89,6 +89,8 @@ public class Controller : MonoBehaviour
 
     private void InputUpdate()
     {
+        
+      
         inputThrottle = Input.GetAxis("Vertical") < 0 ? 0 : Input.GetAxis("Vertical");
         inputBrakes = Input.GetAxis("Vertical") > 0 ? 0 : Input.GetAxis("Vertical");
         inputSteering = Input.GetAxis("Horizontal");

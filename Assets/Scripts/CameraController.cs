@@ -75,8 +75,12 @@ public class CameraController : MonoBehaviour
 
         private void SetPosition()
         {
-            // SET POSITION OF THE CAMERA GIMBAL BASED ON CAR'S POSITION W/ OFFSET
-            transform.position = target.position + target.rotation * targetPosOffset;
+        // SET POSITION OF THE CAMERA GIMBAL BASED ON CAR'S POSITION W/ OFFSET
+        var direction = target.position - transform.position;
+        var rotation = new Quaternion();
+        rotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.position = Vector3.Lerp(transform.position,target.position +  targetPosOffset,smoothMove* Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, rotation, smoothRotate * Time.deltaTime);
         }
 
         private void SetRotation(float dt)
@@ -94,9 +98,9 @@ public class CameraController : MonoBehaviour
         private void CameraRotation(float dt)
         {
             // ROTATE CAMERA SMOOTHLY TOWARDS CAMERA GIMBAL'S ROTATION
-            Vector3 direction = transform.position - cam.position;
+           // Vector3 direction = transform.position - cam.position;
            // Quaternion lookRotation = Quaternion.LookRotation(direction);
 
-           // cam.rotation = Quaternion.Slerp(cam.rotation, lookRotation, smoothRotate * dt);
+         //  transform.rotation = Quaternion.Slerp(transform.rotation, target.rotation, smoothRotate * dt);
         }
     }

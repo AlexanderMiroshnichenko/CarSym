@@ -42,8 +42,8 @@ public class WheelControllerTFM : MonoBehaviour
 
     //Target friction method vars
     private float targetAngularVelocity;
-    private float targetFrictionTorque;
-    private float maximumFrictionTorque;
+    public float targetFrictionTorque;
+    public float maximumFrictionTorque;
     [SerializeField]
     private float longFrictionCoefficient = 1f;
     private float targetAngularAcceleration;
@@ -116,6 +116,7 @@ public class WheelControllerTFM : MonoBehaviour
         GetSy();
         AddTireForce();
         Debug.Log("??");
+       
     }
 
     private void Raycast()
@@ -195,7 +196,8 @@ public class WheelControllerTFM : MonoBehaviour
         {
             combinedForce = combinedForce.normalized;
         }
-
+        //Debug.Log("Target friction torque " + targetFrictionTorque);
+        //Debug.Log("Max friction torque " + maximumFrictionTorque);
         fX = combinedForce.x * fZ * longCoeff;
         fY = combinedForce.y * fZ * latCoeff;
 
