@@ -7,7 +7,7 @@ public class GearBoxComponent : MonoBehaviour
 
     [SerializeField] private float[] gearboxRatio;
     [SerializeField] private float shiftTime;
-    private int currentGear = 1;
+    public int currentGear = 1;
     private bool inGear = true;
     private int nextGear = 1;
 

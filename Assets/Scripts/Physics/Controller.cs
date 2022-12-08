@@ -42,6 +42,10 @@ public class Controller : MonoBehaviour
     private float[] angularVelocities = new float[4];
 
 
+    private int tempGear;
+    private bool hbJustPressed = false;
+
+
     private void Awake()
     {
         rb = transform.root.GetComponent<Rigidbody>();
@@ -163,12 +167,16 @@ public class Controller : MonoBehaviour
     {
         if(handBrake)
         {
+            
             btR = Mathf.Lerp(btR, 5000f, Time.deltaTime * 8f);
         }
         else
         {
+           
             btR = _brakeTorque[1];
         }
+
+     
         wheelControllers[0].PhysicsUpdate(0, _brakeTorque[0], deltaTime);
         wheelControllers[1].PhysicsUpdate(0, _brakeTorque[0], deltaTime);
         wheelControllers[2].PhysicsUpdate(_driveTorque[0], btR, deltaTime);
