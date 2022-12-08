@@ -1463,6 +1463,49 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49decd61dcbb66446a06bffa8fd0339e, type: 3}
+--- !u!1 &867432191 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4301892387696612427, guid: 49decd61dcbb66446a06bffa8fd0339e, type: 3}
+  m_PrefabInstance: {fileID: 863206888}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &867432199 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6350146865415180748, guid: 49decd61dcbb66446a06bffa8fd0339e, type: 3}
+  m_PrefabInstance: {fileID: 863206888}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867432191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 552b14151a1d9d744bd7820f7ccc1821, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &867432214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867432191}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 571f66915f36c71429ae85a9f0db6373, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  engine: {fileID: 867432199}
+  startOffValue: 0.35
+  Load: 0
+  loadLerpSpeed: 15
+  lowAccelClip: {fileID: 8300000, guid: d73d3797b9abf254c864645af38f1fc7, type: 3}
+  lowDecelClip: {fileID: 8300000, guid: d73d3797b9abf254c864645af38f1fc7, type: 3}
+  highAccelClip: {fileID: 8300000, guid: d73d3797b9abf254c864645af38f1fc7, type: 3}
+  highDecelClip: {fileID: 8300000, guid: d73d3797b9abf254c864645af38f1fc7, type: 3}
+  Turbo: {fileID: 8300000, guid: 1065d13c93441464e84b6d8377b5c28f, type: 3}
+  turboVolume: 2
+  Pitch: 0.85
+  lowPitchMin: 0.67
+  lowPitchMax: 0.11
+  highPitchMultiplier: 0.363
+  pitchMultiplier: 1
 --- !u!1 &1119522245
 GameObject:
   m_ObjectHideFlags: 0

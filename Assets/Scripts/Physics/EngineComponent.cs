@@ -9,19 +9,21 @@ public class EngineComponent : MonoBehaviour
     [SerializeField] private float startFriction = 50f;
     [SerializeField] private float frictionCoefficient = 0.02f;
     [SerializeField] private float engineInertia = 0.2f;
-    [SerializeField] private float engineIdleRpm;
-    [SerializeField] private float engineMaxRpm;
+    [SerializeField] public float engineIdleRpm;
+    [SerializeField] public float engineMaxRpm;
     [SerializeField] private float engineMul = 2f;
     [SerializeField] private Vector3 engineOrientation = Vector3.right;
     private Rigidbody rb;
     private GearBoxComponent gearBox;
     private float rpmToRad;
     private float radToRpm;
-    private float maxEffectiveTorque;
-    private float engineRpm;
+    public float maxEffectiveTorque;
+    public float engineRpm;
     private float engineFriction;
-    private float engineTorque;
+    public float engineTorque;
     private float engineAngularVelocity;
+    public bool test;
+    public float lastValue;
 
 
     public void InitializeEngine(Rigidbody _rb, GearBoxComponent _gearBox)
@@ -48,6 +50,8 @@ public class EngineComponent : MonoBehaviour
         {
             rb.AddTorque(engineOrientation * engineTorque * 2);
         }
+        lastValue = engineRpm;
+        test = (lastValue > engineRpm) ? true : false;
     }
 
     public float GetAngularVelocity()
